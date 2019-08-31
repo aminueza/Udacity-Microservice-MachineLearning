@@ -101,7 +101,7 @@ jobs:
           command: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
       - run:
           name: Build Docker image
-          command: docker build --squash --tag aminueza/$CIRCLE_PROJECT_REPONAME:$DTAG .
+          command: docker build --tag aminueza/$CIRCLE_PROJECT_REPONAME:$DTAG .
 
       # Push Docker image
       - run:
