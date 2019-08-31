@@ -1,0 +1,50 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: udacity-prediction
+  labels:
+    app: udacity-prediction
+spec:
+  template:
+    metadata:
+      labels:
+        run: udacity-prediction
+        app: udacity-prediction
+    spec:
+      # affinity:
+      #   podAntiAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #     - labelSelector:
+      #         matchExpressions:
+      #         - key: "udacity-prediction"
+      #           operator: In
+      #           values:
+      #           - udacity-prediction
+      #       topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: udacity-prediction
+        image: aminueza/udacity-prediction:v0.1
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 80
+            name: http
+        resources:
+          limits:
+            memory: 1250m
+            cpu: 3000m
+          requests:
+            memory: 2048m
+            cpu: 600m
+---
+kind: HorizontalPodAutoscaler
+apiVersion: autoscaling/v1
+metadata:
+  name: udacity-prediction
+spec:
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: udacity-prediction
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80

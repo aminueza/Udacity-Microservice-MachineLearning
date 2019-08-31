@@ -14,17 +14,9 @@ workflows:
             branches:
               only: master
 
-      - lint:
+      - build_docker:
           requires:
             - build
-          filters:
-            branches:
-              only: master
-
-      - publish:
-          requires:
-            - build
-            - lint 
           filters:
             branches:
               only: master
@@ -33,7 +25,7 @@ jobs:
 
   build:
     docker:
-      - image: python:3.7.3-stretch
+      - image: circleci/python:3.7.3-stretch
 
     working_directory: ~/repo
 
@@ -57,45 +49,59 @@ jobs:
           command: | 
             wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64 &&\
             chmod +x /bin/hadolint
+      
       # save build dependencies for next jobs
       - save_cache:
           name: "Save build dependencies"
           key: v1-dependencies-{{ checksum "requirements.txt" }}
           paths:
             - ./venv
-
-  lint:
-    docker:
-      - image: python:3.7.3-stretch
-
-    steps:
-      - checkout
-      # Setup remote Docker for building
-      - setup_remote_docker
-      - restore_cache:
-          name: "Download hadolint build"
-          keys:
-            - v1-dependencies-{{ .Environment.CIRCLE_WORKFLOW_ID }}
+      
       - run:
           name: run lint
           command: |
             . venv/bin/activate
             make lint
-  
-  publish:
+            
+  #Build docker image and push to dockerhub
+  build_docker:
     docker:
-      - image: python:3.7.3-stretch
+      - image: circleci/python:3.7.3-stretch
+
+    working_directory: ~/repo
 
     steps:
       - checkout
-      # Setup remote Docker for building
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
+
+        # Download and cache dependencies
       - restore_cache:
-          name: "Download dependencies build"
           keys:
-            - v1-dependencies-{{ .Environment.CIRCLE_WORKFLOW_ID }}
+          - v1-dependencies-{{ checksum "requirements.txt" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      # Build dockerfile
       - run:
-          name: run lint
+          name: Setup env
           command: |
-            . venv/bin/activate
-            make lint
+                if [ -n "$CIRCLE_TAG" ]; then
+                    echo 'export DTAG=$CIRCLE_TAG' >> $BASH_ENV
+                else
+                    echo 'export DTAG=${CIRCLE_BRANCH}_latest' >> $BASH_ENV
+                fi
+
+      # Build Docker image
+      - run:
+          name: docker login
+          command: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
+      - run:
+          name: Build Docker image
+          command: docker build --squash --tag aminueza/$CIRCLE_PROJECT_REPONAME:$DTAG .
+
+      # Push Docker image
+      - run:
+          name: Push to DockerHub
+          command: |
+                docker push aminueza/$CIRCLE_PROJECT_REPONAME:$DTAG

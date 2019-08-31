@@ -1,0 +1,7 @@
+*.yaml
+*.md
+*.sh
+.circleci
+output_txt_files
+Dockerfile
+Makefile
