@@ -12,6 +12,8 @@ dockerpath=aminueza/udacity-prediction:v0.1
 # Authenticate & tag
 # Docker image is tagged on docker build
 echo "Docker ID and Image: $dockerpath"
+#fill out setup_env.sh
+source .env.sh #change it for setup_env.sh
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
 
 # Step 3:

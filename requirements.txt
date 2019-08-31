@@ -6,5 +6,4 @@ pylint
 pytest
 requests
 pytest-cov
-jupyter
 nbval

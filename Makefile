@@ -31,12 +31,13 @@ help:
 	@echo "  lint         Check file erros"
 	@echo "  test         Test app.py"
 	@echo "  docker       Run docker script"
+	@echo "  all          Run all files"
 	@echo "  clean        Remove all intermediate files"
 	@echo "  help  		  Show this help message"
 
 # ------------------------------------------
 
-setup:
+setup: $(PYENV)
 	# Create python virtualenv & source it
 	# source ~/.devops/bin/activate
 	@( \
@@ -77,10 +78,14 @@ lint: $(PYENV)
 docker: 
 	@sh run_docker.sh
 
+upload: 
+	@sh upload_docker.sh
+
 run:
 	@kubectl apply -f kubernetes-prediction.yaml
 
-all: install lint test
+all: $(PYENV)
+	setup install lint docker test upload
 
 clean: 
 	@docker rm -f udacity-prediction
