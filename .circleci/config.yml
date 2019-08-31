@@ -61,7 +61,7 @@ jobs:
           command: |
             make lint
 
-     - run:
+      - run:
           name: run test
           command: |
             make test
