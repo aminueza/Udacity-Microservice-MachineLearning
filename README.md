@@ -25,18 +25,50 @@ You can find a detailed [project rubric, here](https://review.udacity.com/#!/rub
 
 ## Setup the Environment
 
-* Create a virtualenv and activate it
-* Run `make install` to install the necessary dependencies
+* Create a virtualenv and activate it:
+```
+$ make setup
+```
+* Install the necessary dependencies:
+```
+$ make install
+```
+* Fill and set env variables up:
+```
+$ sh setup_env.sh
+```
 
 ### Running `app.py`
 
-1. Standalone:  `python app.py`
-2. Run in Docker:  `./run_docker.sh`
-3. Run in Kubernetes:  `./run_kubernetes.sh`
+There are two ways for running `app.py`: locally, docker and kubernetes.
 
-### Kubernetes Steps
+#### Locally
+* Run `app.py`
+```
+$ python app.py
+```
+#### Running under docker
+* The first way to run prediction under docker is running `run_docker.sh`:
+```
+$ sh run_docker.sh
+```
+* The easiest way is running by makefile:
+```
+$ make docker
+```
 
-* Setup and Configure Docker locally
-* Setup and Configure Kubernetes locally
-* Create Flask app in Container
-* Run via kubectl
+#### Running under kubernetes
+
+There are two ways to deploy prediction to kubernetes: running `run_kubernetes.sh` script or applying by yaml file using makefile.
+
+* To run prediction app under kubernetes, build a docker image and/or push this image to your dockerhub using `run_kubernetes.sh` script:
+```
+$ make docker
+$ sh run_kubernetes.sh
+```
+
+* To run prediction app under kubernetes, build a docker image and/or push this image to your dockerhub using yaml/makefile:
+```
+$ make docker
+$ make kubernetes
+```

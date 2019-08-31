@@ -37,7 +37,7 @@ help:
 
 # ------------------------------------------
 
-setup: $(PYENV)
+setup:
 	# Create python virtualenv & source it
 	# source ~/.devops/bin/activate
 	@( \
