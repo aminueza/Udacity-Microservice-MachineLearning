@@ -17,4 +17,4 @@ kubectl get pods
 
 # Step 4:
 # Forward the container port to a host
-kubectl port-forward $(kubectl get pod -l service=udacity-prediction -o template --template="{{(index .items 0).metadata.name}}") 8080:80
+kubectl port-forward $(kubectl get pods -o=name | grep udacity-prediction | sed "s/^.\{4\}//") 8000:80
