@@ -46,9 +46,8 @@ jobs:
       - run:
           name: Install hadolint
           command: | 
-            curl -Lk "https://github.com/hadolint/hadolint/releases/download/${HADOLINT_VERSION}/hadolint-Linux-x86_64" -o /usr/bin/hadolint && \
-            echo "66815d142f0ed9b0ea1120e6d27142283116bf26 /usr/bin/hadolint" | sha1sum -c - && \
-            chmod +x /usr/bin/hadolint
+            sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64 &&\
+            sudo chmod +x /bin/hadolint
       
       # save build dependencies for next jobs
       - save_cache:
@@ -62,7 +61,7 @@ jobs:
           command: |
             make lint
 
-      - run:
+     - run:
           name: run test
           command: |
             make test
