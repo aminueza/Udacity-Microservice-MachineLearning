@@ -33,7 +33,7 @@ help:
 	@echo "  docker       Run docker script"
 	@echo "  all          Run all files"
 	@echo "  clean        Remove all intermediate files"
-	@echo "  help  		  Show this help message"
+	@echo "  help         Show this help message"
 
 # ------------------------------------------
 
@@ -84,8 +84,7 @@ upload:
 run:
 	@kubectl apply -f kubernetes-prediction.yaml
 
-all: $(PYENV)
-	setup install lint docker test upload
+all: setup install lint docker test upload
 
 clean: 
 	@docker rm -f udacity-prediction

@@ -11,16 +11,6 @@ spec:
         run: udacity-prediction
         app: udacity-prediction
     spec:
-      # affinity:
-      #   podAntiAffinity:
-      #     requiredDuringSchedulingIgnoredDuringExecution:
-      #     - labelSelector:
-      #         matchExpressions:
-      #         - key: "udacity-prediction"
-      #           operator: In
-      #           values:
-      #           - udacity-prediction
-      #       topologyKey: "kubernetes.io/hostname"
       containers:
       - name: udacity-prediction
         image: aminueza/udacity-prediction:v0.1
