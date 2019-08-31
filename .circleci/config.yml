@@ -39,8 +39,7 @@ jobs:
           - v1-dependencies-
       - run:
           name: Create virtual env
-          # ci-npm-auth is using $AWS_ECR_ACCESS_KEY_ID / $AWS_ECR_SECRET_ACCESS_KEY to create auth for npm
-          command: python3 -m venv venv
+          command: make setup
       - run:
           name: Install packages
           command: make install
@@ -55,13 +54,17 @@ jobs:
           name: "Save build dependencies"
           key: v1-dependencies-{{ checksum "requirements.txt" }}
           paths:
-            - ./venv
+            - ./devops
       
       - run:
           name: run lint
           command: |
-            . venv/bin/activate
             make lint
+
+    - run:
+          name: run test
+          command: |
+            make test
             
   #Build docker image and push to dockerhub
   build_docker:
